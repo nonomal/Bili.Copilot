@@ -28,6 +28,7 @@
       <Content Remove="Assets\ffmpeg\postproc-57.dll" />
       <Content Remove="Assets\ffmpeg\swresample-4.dll" />
       <Content Remove="Assets\ffmpeg\swscale-7.dll" />
+      <Content Remove="Assets\Widgets\RankWidgetTemplate.json" />
     </ItemGroup>
     <ItemGroup>
         <None Remove="Assets\ERROR_rgba.png" />
@@ -180,6 +181,11 @@
         <ProjectReference Include="..\Models\Models.App\Models.App.csproj" />
         <ProjectReference Include="..\Models\Models.Data\Models.Data.csproj" />
         <ProjectReference Include="..\ViewModels\ViewModels.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Update="Assets\Widgets\RankWidgetTemplate.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
     <ItemGroup>
       <None Update="Assets\ffmpeg\avcodec-60.dll">

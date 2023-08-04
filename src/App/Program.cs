@@ -1,11 +1,15 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Bili.Copilot.App.NativeServices;
+using Bili.Copilot.App.NativeServices.Widgets;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
+using Microsoft.Windows.Widgets.Providers;
 
 namespace Bili.Copilot.App;
 
@@ -22,27 +26,34 @@ public static class Program
     [STAThread]
     private static void Main(string[] args)
     {
-        var mainAppInstance = AppInstance.FindOrRegisterForKey(App.Id);
-        if (!mainAppInstance.IsCurrent)
+        WinRT.ComWrappersSupport.InitializeComWrappers();
+
+        if (args?.Any(p => p.Contains("RegisterProcessAsComServer")) ?? false)
         {
-            var current = AppInstance.GetCurrent();
-            var actArgs = current.GetActivatedEventArgs();
-            RedirectActivationTo(actArgs, mainAppInstance);
-            return;
+            ComServer<IWidgetProvider, WidgetProvider>.Instance.Run();
         }
         else
         {
-            mainAppInstance.Activated += OnAppActivated;
+            var mainAppInstance = AppInstance.FindOrRegisterForKey(App.Id);
+            if (!mainAppInstance.IsCurrent)
+            {
+                var current = AppInstance.GetCurrent();
+                var actArgs = current.GetActivatedEventArgs();
+                RedirectActivationTo(actArgs, mainAppInstance);
+                return;
+            }
+            else
+            {
+                mainAppInstance.Activated += OnAppActivated;
+            }
+
+            Application.Start(p =>
+            {
+                var context = new DispatcherQueueSynchronizationContext(DispatcherQueue.GetForCurrentThread());
+                SynchronizationContext.SetSynchronizationContext(context);
+                _app = new App();
+            });
         }
-
-        WinRT.ComWrappersSupport.InitializeComWrappers();
-
-        Application.Start(p =>
-        {
-            var context = new DispatcherQueueSynchronizationContext(DispatcherQueue.GetForCurrentThread());
-            SynchronizationContext.SetSynchronizationContext(context);
-            _app = new App();
-        });
     }
 
     private static void OnAppActivated(object sender, AppActivationArguments e)

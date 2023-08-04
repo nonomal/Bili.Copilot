@@ -1,0 +1,31 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.6",
+  "body": [
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "东 汉 科 技 大 爆 炸",
+          "wrap": true,
+          "style": "default",
+          "weight": "Bolder",
+          "isSubtle": false,
+          "spacing": "Small",
+          "separator": true,
+          "horizontalAlignment": "Left",
+          "maxLines": 2
+        },
+        {
+          "type": "TextBlock",
+          "text": "嘻嘻哈哈",
+          "spacing": "Small",
+          "size": "Small",
+          "isSubtle": true
+        }
+      ]
+    }
+  ]
+}
