@@ -90,6 +90,7 @@
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <Rule Id="SA0001" Action="None" />
     <Rule Id="SA1000" Action="None" />
+    <Rule Id="SA1011" Action="None" />
     <Rule Id="SA1101" Action="None" />
     <Rule Id="SA1108" Action="None" />
     <Rule Id="SA1309" Action="None" />
@@ -99,6 +100,7 @@
     <Rule Id="SA1518" Action="None" />
     <Rule Id="SA1611" Action="None" />
     <Rule Id="SA1623" Action="None" />
+    <Rule Id="SA1629" Action="None" />
     <Rule Id="SA1642" Action="None" />
   </Rules>
 </RuleSet>
