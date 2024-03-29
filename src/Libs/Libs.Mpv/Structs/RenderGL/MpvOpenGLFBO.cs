@@ -2,7 +2,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace MpvPlayer.Core.Structs.RenderGL;
+namespace Bili.Copilot.Libs.Mpv.Structs.RenderGL;
 
 /// <summary>For Mpv_RENDER_PARAM_OPENGL_FBO.</summary>
 [StructLayout(LayoutKind.Sequential, Size = 16)]

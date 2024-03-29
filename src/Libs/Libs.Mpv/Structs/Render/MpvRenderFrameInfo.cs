@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using System.Runtime.InteropServices;
-using MpvPlayer.Core.Enums.Render;
+using Bili.Copilot.Libs.Mpv.Enums.Render;
 
-namespace MpvPlayer.Core.Structs.Render;
+namespace Bili.Copilot.Libs.Mpv.Structs.Render;
 
 /// <summary>
 /// <para>Information about the next video frame that will be rendered. Can be</para>

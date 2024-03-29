@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using System.Runtime.InteropServices;
-using MpvPlayer.Core.Args;
-using MpvPlayer.Core.Interop;
-using MpvPlayer.Core.Structs.Render;
-using MpvPlayer.Core.Structs.RenderGL;
+using Bili.Copilot.Libs.Mpv.Args;
+using Bili.Copilot.Libs.Mpv.Interop;
+using Bili.Copilot.Libs.Mpv.Structs.Render;
+using Bili.Copilot.Libs.Mpv.Structs.RenderGL;
 
-namespace MpvPlayer.Core;
+namespace Bili.Copilot.Libs.Mpv;
 
 /// <summary>
 /// Mpv player.
@@ -87,11 +87,11 @@ public sealed partial class Player : IDisposable
     /// <summary>
     /// Render the video to the OpenGL context.
     /// </summary>
-    public void RenderGL(int width, int height, int fboInt)
+    public void RenderGL(int width, int height, IntPtr fboInt)
     {
         var fbo = new MpvOpenGLFBO
         {
-            Fbo = fboInt,
+            Fbo = fboInt.ToInt32(),
             W = width,
             H = height,
         };
@@ -120,6 +120,17 @@ public sealed partial class Player : IDisposable
     public async Task OpenAsync(string path)
     {
         await Client.ExecuteAsync(new[] { "loadfile", path, "replace" });
+        Client.SetProperty(PauseProperty, !AutoPlay);
+    }
+
+    /// <summary>
+    /// Render the video to the window.
+    /// </summary>
+    /// <param name="commands">Play commands.</param>
+    /// <returns><see cref="Task"/>.</returns>
+    public async Task OpenAsync(string[] commands)
+    {
+        await Client.ExecuteAsync(commands);
         Client.SetProperty(PauseProperty, !AutoPlay);
     }
 
@@ -168,6 +179,18 @@ public sealed partial class Player : IDisposable
     }
 
     /// <summary>
+    /// Stop the media.
+    /// </summary>
+    public void Stop()
+    {
+        if (IsMediaLoaded())
+        {
+            Client.SetProperty(PauseProperty, true);
+            Client.SetProperty(PositionProperty, 0);
+        }
+    }
+
+    /// <summary>
     /// Toggle play/pause.
     /// </summary>
     public async void TogglePlayPauseAsync()
@@ -211,4 +234,30 @@ public sealed partial class Player : IDisposable
             Client.SetProperty(SpeedProperty, rate);
         }
     }
+
+    /// <summary>
+    /// 获取播放速率.
+    /// </summary>
+    /// <returns>播放速率.</returns>
+    public double GetPlayRate()
+        => IsMediaLoaded() ? Client.GetPropertyToDouble(SpeedProperty) : 1;
+
+    /// <summary>
+    /// Set the volume.
+    /// </summary>
+    /// <param name="volume">volume.</param>
+    public void SetVolume(double volume)
+    {
+        if (IsMediaLoaded())
+        {
+            Client.SetProperty(VolumeProperty, volume);
+        }
+    }
+
+    /// <summary>
+    /// 获取音量.
+    /// </summary>
+    /// <returns>音量.</returns>
+    public double GetVolume()
+        => IsMediaLoaded() ? Client.GetPropertyToDouble(VolumeProperty) : 1;
 }

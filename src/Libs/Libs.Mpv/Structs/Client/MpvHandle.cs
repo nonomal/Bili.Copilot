@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
-namespace MpvPlayer.Core.Structs.Client;
+namespace Bili.Copilot.Libs.Mpv.Structs.Client;
 
 /// <summary>
 /// Represents a handle to an mpv instance.

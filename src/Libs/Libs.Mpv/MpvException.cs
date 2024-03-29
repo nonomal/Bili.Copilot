@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
-using MpvPlayer.Core.Enums.Client;
+using Bili.Copilot.Libs.Mpv.Enums.Client;
 
-namespace MpvPlayer.Core;
+namespace Bili.Copilot.Libs.Mpv;
 
 /// <summary>
 /// Represents an exception thrown by the MPV library.

@@ -1,4 +1,4 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
-global using static MpvPlayer.Core.Constants;
-global using static MpvPlayer.Core.Utils;
+global using static Bili.Copilot.Libs.Mpv.Constants;
+global using static Bili.Copilot.Libs.Mpv.Utils;

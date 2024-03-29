@@ -2,12 +2,12 @@
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using MpvPlayer.Core.Args;
-using MpvPlayer.Core.Enums.Client;
-using MpvPlayer.Core.Enums.Player;
-using MpvPlayer.Core.Structs.Client;
+using Bili.Copilot.Libs.Mpv.Args;
+using Bili.Copilot.Libs.Mpv.Enums.Client;
+using Bili.Copilot.Libs.Mpv.Enums.Player;
+using Bili.Copilot.Libs.Mpv.Structs.Client;
 
-namespace MpvPlayer.Core;
+namespace Bili.Copilot.Libs.Mpv;
 
 /// <summary>
 /// Represents a media player.

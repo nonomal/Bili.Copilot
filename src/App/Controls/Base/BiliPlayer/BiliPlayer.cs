@@ -2,10 +2,13 @@
 
 using System.ComponentModel;
 using System.Diagnostics;
+using Bili.Copilot.Controls.Base.PlayerExtensions;
 using Bili.Copilot.ViewModels;
+using Bili.Copilot.ViewModels.Components;
 using FlyleafLib.Controls;
 using FlyleafLib.MediaPlayer;
 using Microsoft.UI.Xaml.Media;
+using OpenTK.Graphics.OpenGL4;
 using Vortice.DXGI;
 using Windows.Media.Playback;
 
@@ -23,11 +26,11 @@ public sealed class BiliPlayer : BiliPlayerBase, IHostPlayer
         DependencyProperty.Register(nameof(Overlay), typeof(object), typeof(BiliPlayer), new PropertyMetadata(default, new PropertyChangedCallback(OnOverlayChanged)));
 
     private MediaPlayerElement _mediaElement;
+    private OpenGLRenderControl _openGLRenderControl;
     private SwapChainPanel _swapChainPanel;
 
-    // private VideoView _vlcView;
-    // private string[] _vlcSwapChainOptions;
     private Grid _rootGrid;
+    private Libs.Mpv.Player _mpvPlayer;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BiliPlayer"/> class.
@@ -56,16 +59,6 @@ public sealed class BiliPlayer : BiliPlayerBase, IHostPlayer
     {
         _mediaElement?.MediaPlayer?.Dispose();
         _mediaElement?.SetMediaPlayer(null);
-
-        // if (_vlcView != null)
-        // {
-        //    _rootGrid.Children.Remove(_vlcView);
-        //    _vlcView = null;
-        //    if (ViewModel is VlcPlayerViewModel vlc)
-        //    {
-        //        vlc.ReleaseLibVlc();
-        //    }
-        // }
     }
 
     /// <inheritdoc/>
@@ -87,11 +80,9 @@ public sealed class BiliPlayer : BiliPlayerBase, IHostPlayer
         if (e.NewValue is IPlayerViewModel newVM)
         {
             newVM.PropertyChanged += OnViewModelPropertyChanged;
-
-            // newVM.SetSwapChainOptions(_vlcSwapChainOptions);
         }
 
-        ReloadPlayer();
+        ReloadPlayerAsync();
     }
 
     /// <inheritdoc/>
@@ -108,11 +99,17 @@ public sealed class BiliPlayer : BiliPlayerBase, IHostPlayer
             _mediaElement = element;
         }
 
-        // if (GetTemplateChild("VlcVideoView") is VideoView view)
-        // {
-        //    _vlcView = view;
-        //    _vlcView.Initialized += OnVlcViewInitialized;
-        // }
+        if (GetTemplateChild("OpenglPlayTarget") is OpenGLRenderControl control)
+        {
+            _openGLRenderControl = control;
+            _openGLRenderControl.Setting = new OpenGLContextSettings()
+            {
+                GraphicsProfile = OpenTK.Windowing.Common.ContextProfile.Compatability,
+            };
+
+            _openGLRenderControl.Render += OnOpenGLRender;
+        }
+
         if (GetTemplateChild("RootGrid") is Grid grid)
         {
             _rootGrid = grid;
@@ -120,7 +117,7 @@ public sealed class BiliPlayer : BiliPlayerBase, IHostPlayer
 
         if (ViewModel?.Player != null)
         {
-            ReloadPlayer();
+            ReloadPlayerAsync();
         }
     }
 
@@ -130,6 +127,15 @@ public sealed class BiliPlayer : BiliPlayerBase, IHostPlayer
         {
             var instance = d as BiliPlayer;
             overlay.PaneToggled += instance.OnOverlayPaneToggled;
+        }
+    }
+
+    private void OnOpenGLRender(TimeSpan span)
+    {
+        if (_mpvPlayer != null && _mpvPlayer.Client?.IsInitialized is true)
+        {
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            _mpvPlayer.RenderGL((int)(ActualWidth * _openGLRenderControl.ScaleX), (int)(ActualHeight * _openGLRenderControl.ScaleY), _openGLRenderControl.GetBufferHandle());
         }
     }
 
@@ -143,11 +149,6 @@ public sealed class BiliPlayer : BiliPlayerBase, IHostPlayer
         _rootGrid.Padding = new Thickness(e, 0, 0, 0);
     }
 
-    // private void OnVlcViewInitialized(object sender, InitializedEventArgs e)
-    // {
-    //     _vlcSwapChainOptions = e.SwapChainOptions;
-    //     ViewModel?.SetSwapChainOptions(e.SwapChainOptions);
-    // }
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         if (Overlay is BiliPlayerOverlay overlay)
@@ -184,11 +185,11 @@ public sealed class BiliPlayer : BiliPlayerBase, IHostPlayer
     {
         if (e.PropertyName == nameof(ViewModel.Player))
         {
-            ReloadPlayer();
+            ReloadPlayerAsync();
         }
     }
 
-    private void ReloadPlayer()
+    private async void ReloadPlayerAsync()
     {
         if (ViewModel?.Player is Player)
         {
@@ -197,10 +198,16 @@ public sealed class BiliPlayer : BiliPlayerBase, IHostPlayer
                 _mediaElement.Visibility = Visibility.Collapsed;
             }
 
-            // if (_vlcView != null)
-            // {
-            //     _vlcView.Visibility = Visibility.Collapsed;
-            // }
+            if (_swapChainPanel != null)
+            {
+                _swapChainPanel.Visibility = Visibility.Visible;
+            }
+
+            if (_openGLRenderControl != null)
+            {
+                _openGLRenderControl.Visibility = Visibility.Collapsed;
+            }
+
             ReplaceFFmpegPlayer();
         }
         else if (ViewModel?.Player is MediaPlayer mp)
@@ -210,33 +217,39 @@ public sealed class BiliPlayer : BiliPlayerBase, IHostPlayer
                 _mediaElement.Visibility = Visibility.Visible;
             }
 
-            // if (_vlcView != null)
-            // {
-            //     _vlcView.Visibility = Visibility.Collapsed;
-            // }
             if (_swapChainPanel != null)
             {
                 _swapChainPanel.Visibility = Visibility.Collapsed;
             }
 
+            if (_openGLRenderControl != null)
+            {
+                _openGLRenderControl.Visibility = Visibility.Collapsed;
+            }
+
             _mediaElement.SetMediaPlayer(mp);
         }
+        else if (ViewModel?.Player is Libs.Mpv.Player vp)
+        {
+            if (_mediaElement != null)
+            {
+                _mediaElement.Visibility = Visibility.Collapsed;
+            }
 
-        // else if (ViewModel?.Player is LibVLCSharp.Shared.MediaPlayer)
-        // {
-        //    if (_mediaElement != null)
-        //    {
-        //        _mediaElement.Visibility = Visibility.Collapsed;
-        //    }
-        //    if (_vlcView != null)
-        //    {
-        //        _vlcView.Visibility = Visibility.Visible;
-        //    }
-        //    if (_swapChainPanel != null)
-        //    {
-        //        _swapChainPanel.Visibility = Visibility.Collapsed;
-        //    }
-        // }
+            if (_swapChainPanel != null)
+            {
+                _swapChainPanel.Visibility = Visibility.Collapsed;
+            }
+
+            if (_openGLRenderControl != null)
+            {
+                _openGLRenderControl.Visibility = Visibility.Visible;
+            }
+
+            _mpvPlayer = vp;
+            await ((MpvPlayerViewModel)ViewModel).SetInitializeArgumentsAsync(new Libs.Mpv.Args.InitializeArgument(default, func: OpenGLRenderContext.GetProcAddress));
+            _openGLRenderControl.Initialize();
+        }
     }
 
     private void ReplaceFFmpegPlayer()

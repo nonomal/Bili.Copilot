@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using System.Runtime.InteropServices;
-using MpvPlayer.Core.Enums.Render;
+using Bili.Copilot.Libs.Mpv.Enums.Render;
 
-namespace MpvPlayer.Core.Structs.Render;
+namespace Bili.Copilot.Libs.Mpv.Structs.Render;
 
 /// <summary>
 /// <para>Used to pass arbitrary parameters to some mpv_render_* functions. The</para>

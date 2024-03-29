@@ -3,7 +3,7 @@
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
 
-namespace MpvPlayer.Core;
+namespace Bili.Copilot.Libs.Mpv;
 
 [CustomMarshaller(typeof(string), MarshalMode.ManagedToUnmanagedOut, typeof(StringMarshaller))]
 internal static class StringMarshaller

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
-namespace MpvPlayer.Core;
+namespace Bili.Copilot.Libs.Mpv;
 
 internal static class Constants
 {

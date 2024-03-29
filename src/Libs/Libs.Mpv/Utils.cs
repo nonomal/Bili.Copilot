@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
-using MpvPlayer.Core.Enums.Client;
-using MpvPlayer.Core.Interop;
+using Bili.Copilot.Libs.Mpv.Enums.Client;
+using Bili.Copilot.Libs.Mpv.Interop;
 
-namespace MpvPlayer.Core;
+namespace Bili.Copilot.Libs.Mpv;
 
 internal static class Utils
 {

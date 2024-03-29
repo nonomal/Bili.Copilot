@@ -3,7 +3,7 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace MpvPlayer.Core;
+namespace Bili.Copilot.Libs.Mpv;
 
 /// <summary>
 /// Libraries import resolver.

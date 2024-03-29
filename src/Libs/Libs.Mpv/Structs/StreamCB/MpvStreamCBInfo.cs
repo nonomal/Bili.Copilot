@@ -3,7 +3,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace MpvPlayer.Core.Structs.StreamCB;
+namespace Bili.Copilot.Libs.Mpv.Structs.StreamCB;
 
 /// <summary>See mpv_stream_cb_open_ro_fn callback.</summary>
 [StructLayout(LayoutKind.Sequential, Size = 48)]

@@ -256,6 +256,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
         {
             BiliPlayerTypes.Add(PlayerType.Native);
             BiliPlayerTypes.Add(PlayerType.FFmpeg);
+            BiliPlayerTypes.Add(PlayerType.Mpv);
 
             // PlayerTypes.Add(PlayerType.Vlc);
         }

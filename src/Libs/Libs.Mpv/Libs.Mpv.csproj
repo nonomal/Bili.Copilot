@@ -5,6 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>Bili.Copilot.Libs.Mpv</AssemblyName>
+    <RootNamespace>Bili.Copilot.Libs.Mpv</RootNamespace>
   </PropertyGroup>
 
 </Project>

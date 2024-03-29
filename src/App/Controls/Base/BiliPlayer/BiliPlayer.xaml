@@ -2,7 +2,8 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Bili.Copilot.App.Controls.Base">
+    xmlns:local="using:Bili.Copilot.App.Controls.Base"
+    xmlns:playerextensions="using:Bili.Copilot.Controls.Base.PlayerExtensions">
     <Style TargetType="local:BiliPlayer">
         <Setter Property="Template">
             <Setter.Value>
@@ -13,6 +14,7 @@
                                 x:Name="SwapChainPanel"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch" />
+                            <playerextensions:OpenGLRenderControl x:Name="OpenglPlayTarget" />
                             <MediaPlayerElement x:Name="MediaElement" AreTransportControlsEnabled="False" />
                             <!--<lvs:VideoView x:Name="VlcVideoView" />-->
                         </Grid>

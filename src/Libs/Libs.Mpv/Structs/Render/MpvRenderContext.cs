@@ -2,7 +2,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace MpvPlayer.Core.Structs.Render;
+namespace Bili.Copilot.Libs.Mpv.Structs.Render;
 
 /// <summary>
 /// Represents a render context.

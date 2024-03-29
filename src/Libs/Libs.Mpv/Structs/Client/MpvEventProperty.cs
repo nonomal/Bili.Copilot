@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using System.Runtime.InteropServices;
-using MpvPlayer.Core.Enums.Client;
+using Bili.Copilot.Libs.Mpv.Enums.Client;
 
-namespace MpvPlayer.Core.Structs.Client;
+namespace Bili.Copilot.Libs.Mpv.Structs.Client;
 
 /// <summary>
 /// Represents a property event.

@@ -2,7 +2,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace MpvPlayer.Core.Structs.RenderGL;
+namespace Bili.Copilot.Libs.Mpv.Structs.RenderGL;
 
 /// <summary>For initializing the mpv OpenGL state via Mpv_RENDER_PARAM_OPENGL_INIT_PARAMS.</summary>
 [StructLayout(LayoutKind.Sequential, Size = 16)]

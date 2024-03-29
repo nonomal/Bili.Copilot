@@ -2,7 +2,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace MpvPlayer.Core.Structs.Client;
+namespace Bili.Copilot.Libs.Mpv.Structs.Client;
 
 /// <summary>
 /// Since API version 1.108.

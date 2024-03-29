@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Libs\Libs.Flyleaf\Libs.Flyleaf.csproj" />
+    <ProjectReference Include="..\Libs\Libs.Mpv\Libs.Mpv.csproj" />
     <ProjectReference Include="..\Libs\Libs.Provider\Libs.Provider.csproj" />
     <ProjectReference Include="..\Libs\Libs.Toolkit\Libs.Toolkit.csproj" />
     <ProjectReference Include="..\Libs\Libs.WebDavClient\Libs.WebDavClient.csproj" />

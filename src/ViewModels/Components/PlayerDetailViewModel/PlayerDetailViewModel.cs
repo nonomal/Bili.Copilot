@@ -12,6 +12,7 @@ using Bili.Copilot.Models.Data.Live;
 using Bili.Copilot.Models.Data.Pgc;
 using Bili.Copilot.Models.Data.Player;
 using Bili.Copilot.Models.Data.Video;
+using Bili.Copilot.ViewModels.Components;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using Windows.System.Display;
@@ -321,8 +322,7 @@ public sealed partial class PlayerDetailViewModel : ViewModelBase, IDisposable
                 Player = preferPlayer switch
                 {
                     PlayerType.FFmpeg => new FlyleafPlayerViewModel(),
-
-                    // PlayerType.Vlc => new VlcPlayerViewModel(),
+                    PlayerType.Mpv => new MpvPlayerViewModel(),
                     _ => new NativePlayerViewModel(),
                 };
             }

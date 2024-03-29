@@ -2,7 +2,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace MpvPlayer.Core.Structs.RenderGL;
+namespace Bili.Copilot.Libs.Mpv.Structs.RenderGL;
 
 /// <summary>For Mpv_RENDER_PARAM_DRM_DISPLAY_V2.</summary>
 [StructLayout(LayoutKind.Sequential, Size = 32)]
