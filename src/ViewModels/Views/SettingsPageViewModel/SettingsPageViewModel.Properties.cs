@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
-using System;
 using System.Collections.ObjectModel;
 using Bili.Copilot.Models.App.Other;
 using Bili.Copilot.Models.Constants.App;
@@ -147,6 +146,9 @@ public sealed partial class SettingsPageViewModel
 
     [ObservableProperty]
     private bool _bottomProgressVisible;
+
+    [ObservableProperty]
+    private bool _isPlaybackRateSliderVisible;
 
     /// <summary>
     /// 播放器显示模式可选集合.

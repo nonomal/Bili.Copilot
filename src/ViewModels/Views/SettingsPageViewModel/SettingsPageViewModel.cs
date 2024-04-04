@@ -61,7 +61,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
         IsVideoDynamicNotificationEnabled = ReadSetting(SettingNames.DynamicNotificationEnabled, true);
         VideoProcessor = ReadSetting(SettingNames.VideoProcessor, VideoProcessors.D3D11);
         BottomProgressVisible = ReadSetting(SettingNames.BottomProgressVisible, true);
-        IsVideoNativePlayer = PlayerType == PlayerType.Native;
+        IsPlaybackRateSliderVisible = ReadSetting(SettingNames.PlaybackRateSliderEnabled, false);
         WebPlayerInit();
         PreferCodecInit();
         DecodeInit();
@@ -76,6 +76,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
         Copyright = string.Format(copyrightTemplate, 2024);
         PackageVersion = AppToolkit.GetPackageVersion();
 
+        IsVideoNativePlayer = PlayerType == PlayerType.Native;
         InitializeWebDavConfigCommand.Execute(default);
 
         PropertyChanged += OnPropertyChanged;
@@ -220,6 +221,9 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
                 break;
             case nameof(BottomProgressVisible):
                 WriteSetting(SettingNames.BottomProgressVisible, BottomProgressVisible);
+                break;
+            case nameof(IsPlaybackRateSliderVisible):
+                WriteSetting(SettingNames.PlaybackRateSliderEnabled, IsPlaybackRateSliderVisible);
                 break;
             default:
                 break;

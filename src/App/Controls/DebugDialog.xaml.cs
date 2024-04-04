@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using System.Diagnostics;
-using System.Security;
 using Bili.Copilot.Libs.Provider;
 using Bili.Copilot.Libs.Toolkit;
 using Bili.Copilot.Models.App.Constants;
@@ -13,8 +12,6 @@ using Bili.Copilot.Models.Data.Pgc;
 using Bili.Copilot.Models.Data.Player;
 using Bili.Copilot.Models.Data.Video;
 using Bili.Copilot.ViewModels;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage;
 
 namespace Bili.Copilot.App.Controls;
 
@@ -120,6 +117,7 @@ public sealed partial class DebugDialog : ContentDialog
 
         if (_type == VideoType.Video)
         {
+            DownloadButton.IsEnabled = AppViewModel.Instance.IsDownloadSupported;
             EpisodeComboBox.Visibility = Visibility.Collapsed;
             var view = await PlayerProvider.GetVideoDetailAsync(_id);
             foreach (var item in view.SubVideos)
@@ -132,7 +130,7 @@ public sealed partial class DebugDialog : ContentDialog
         }
         else if (_type == VideoType.Live)
         {
-            DashButton.IsEnabled = false;
+            DownloadButton.IsEnabled = false;
             AudioUrlBox.Visibility = Visibility.Collapsed;
             PartComboBox.Visibility = Visibility.Collapsed;
             EpisodeComboBox.Visibility = Visibility.Collapsed;
@@ -262,53 +260,12 @@ public sealed partial class DebugDialog : ContentDialog
         }
     }
 
-    private async void OnCopyDashButtonClickAsync(object sender, RoutedEventArgs e)
-    {
-        var mpdFilePath =
-            _audio == null
-                ? AppConstants.DashVideoWithoutAudioMPDFile
-                : AppConstants.DashVideoMPDFile;
-        var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(mpdFilePath));
-        var mpdStr = await FileIO.ReadTextAsync(file);
-
-        var videoStr =
-                $@"<Representation bandwidth=""{_video.Bandwidth}"" codecs=""{_video.Codecs}"" height=""{_video.Height}"" mimeType=""{_video.MimeType}"" id=""{_video.Id}"" width=""{_video.Width}"" startWithSap=""{_video.StartWithSap}"">
-                               <BaseURL>{SecurityElement.Escape(_video.BaseUrl)}</BaseURL>
-                               <SegmentBase indexRange=""{_video.IndexRange}"">
-                                   <Initialization range=""{_video.Initialization}"" />
-                               </SegmentBase>
-                           </Representation>";
-
-        var audioStr = string.Empty;
-
-        if (_audio != null)
-        {
-            audioStr =
-                    $@"<Representation bandwidth=""{_audio.Bandwidth}"" codecs=""{_audio.Codecs}"" mimeType=""{_audio.MimeType}"" id=""{_audio.Id}"">
-                               <BaseURL>{SecurityElement.Escape(_audio.BaseUrl)}</BaseURL>
-                               <SegmentBase indexRange=""{_audio.IndexRange}"">
-                                   <Initialization range=""{_audio.Initialization}"" />
-                               </SegmentBase>
-                           </Representation>";
-        }
-
-        videoStr = videoStr.Trim();
-        audioStr = audioStr.Trim();
-        mpdStr = mpdStr.Replace("{video}", videoStr)
-                       .Replace("{audio}", audioStr)
-                       .Replace("{bufferTime}", $"PT20S");
-
-        var dp = new DataPackage();
-        dp.SetText(mpdStr);
-        Clipboard.SetContent(dp);
-        AppViewModel.Instance.ShowTip(ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success);
-    }
-
     private void LoadDashVideoMpv()
     {
         var httpParams = _type == VideoType.Live
             ? $"--cookies --no-ytdl --user-agent=\\\"Mozilla/5.0 BiliDroid/1.12.0 (bbcallen@gmail.com)\\\" --http-header-fields=\\\"Cookie: {AuthorizeProvider.GetCookieString()}\\\" --http-header-fields=\\\"Referer: https://live.bilibili.com\\\""
             : $"--cookies --user-agent=\\\"{ServiceConstants.DefaultUserAgentString}\\\" --http-header-fields=\\\"Cookie: {AuthorizeProvider.GetCookieString()}\\\" --http-header-fields=\\\"Referer: https://www.bilibili.com\\\"";
+
         var videoUrl = VideoUrlBox.Text;
         var audioUrl = AudioUrlBox.Text;
         var command = $"mpv {httpParams} --title=\\\"{_title}\\\" \\\"{videoUrl}\\\"";
@@ -380,5 +337,14 @@ public sealed partial class DebugDialog : ContentDialog
 
         var episode = (EpisodeInformation)EpisodeComboBox.SelectedItem;
         await LoadEpisodeAsync(episode);
+    }
+
+    private void OnDownloadButtonClickAsync(object sender, RoutedEventArgs e)
+    {
+        var downloadVM = new DownloadModuleViewModel(AppViewModel.Instance.ActivatedWindow);
+        var id = _id.StartsWith("bv", StringComparison.InvariantCultureIgnoreCase) ? _id : $"av{_id}";
+        downloadVM.SetData(id, _parts);
+        var format = _formats[QualityComboBox.SelectedIndex];
+        downloadVM.DownloadCommand.Execute(format.Description);
     }
 }

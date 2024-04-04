@@ -12,12 +12,19 @@
     mc:Ignorable="d">
 
     <Grid>
-        <TextBlock
-            Foreground="{ThemeResource TextFillColorDisabledBrush}"
-            Style="{StaticResource CaptionTextBlockStyle}"
-            Text="{ext:Locale Name=DownloadTip}"
-            TextWrapping="Wrap"
-            Visibility="{x:Bind ViewModel.IsSupported, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}" />
+        <StackPanel Spacing="4" Visibility="{x:Bind ViewModel.IsSupported, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+            <TextBlock
+                Foreground="{ThemeResource TextFillColorDisabledBrush}"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Text="{ext:Locale Name=DownloadTip}"
+                TextWrapping="Wrap" />
+            <HyperlinkButton
+                HorizontalAlignment="Left"
+                Content="{ext:Locale Name=DownloadBBDown}"
+                FontSize="12"
+                NavigateUri="https://github.com/Richasy/BBDown?tab=readme-ov-file#%E5%AE%89%E8%A3%85-bbdown-%E5%8F%8A-ffmpeg" />
+        </StackPanel>
+
         <labs:SettingsExpander
             HorizontalAlignment="Stretch"
             Description="{ext:Locale Name=BasedOnBBDown}"
@@ -58,13 +65,28 @@
                 </labs:SettingsCard>
                 <labs:SettingsCard ContentAlignment="Left" Visibility="{x:Bind ViewModel.IsMultiPartShown, Mode=OneWay}">
                     <StackPanel Spacing="4">
-                        <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{ext:Locale Name=Parts}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{ext:Locale Name=Parts}" />
+                            <HyperlinkButton
+                                Grid.Column="1"
+                                Command="{x:Bind ViewModel.ToggleSelectAllCommand, Mode=OneWay}"
+                                Content="{x:Bind ViewModel.SelectAllText, Mode=OneWay}"
+                                FontSize="12" />
+                        </Grid>
+
                         <ItemsRepeater ItemsSource="{x:Bind ViewModel.Parts, Mode=OneWay}">
                             <ItemsRepeater.Layout>
                                 <UniformGridLayout
                                     MinColumnSpacing="4"
-                                    MinItemHeight="32"
-                                    MinItemWidth="32"
+                                    MinItemHeight="38"
+                                    MinItemWidth="40"
                                     MinRowSpacing="4" />
                             </ItemsRepeater.Layout>
                             <ItemsRepeater.ItemTemplate>

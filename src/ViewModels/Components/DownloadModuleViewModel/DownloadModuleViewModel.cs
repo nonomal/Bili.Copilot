@@ -52,6 +52,8 @@ public sealed partial class DownloadModuleViewModel : ViewModelBase
             Parts[i].Index = i + 1;
             Parts[i].IsSelected = true;
         }
+
+        CheckSelectAllStatus();
     }
 
     [RelayCommand]
@@ -104,13 +106,24 @@ public sealed partial class DownloadModuleViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task DownloadAsync()
+    private async Task DownloadAsync(string preferQuality = "")
     {
         var sb = new StringBuilder();
         sb.Append(_id);
 
         var token = await AuthorizeProvider.Instance.GetTokenAsync();
         sb.Append($" -token {token}");
+
+        var cookie = AuthorizeProvider.GetCookieString();
+        if (!string.IsNullOrEmpty(cookie))
+        {
+            sb.Append($" --cookie \"{cookie}\"");
+        }
+
+        if (!string.IsNullOrEmpty(preferQuality))
+        {
+            sb.Append($" -q \"{preferQuality}\"");
+        }
 
         var hasPartParams = false;
         var hasWorkDirParams = false;
@@ -171,6 +184,27 @@ public sealed partial class DownloadModuleViewModel : ViewModelBase
             {
             }
         }
+    }
+
+    [RelayCommand]
+    private void ToggleSelectAll()
+    {
+        var isSelected = Parts.All(p => p.IsSelected);
+        foreach (var part in Parts)
+        {
+            part.IsSelected = !isSelected;
+        }
+
+        CheckSelectAllStatus();
+    }
+
+    [RelayCommand]
+    private void CheckSelectAllStatus()
+    {
+        var isSelectAll = Parts.All(p => p.IsSelected);
+        SelectAllText = isSelectAll
+            ? ResourceToolkit.GetLocalizedString(Models.Constants.App.StringNames.DeselectAll)
+            : ResourceToolkit.GetLocalizedString(Models.Constants.App.StringNames.SelectAll);
     }
 
     partial void OnOpenFolderWhenDownloadedChanged(bool value)
