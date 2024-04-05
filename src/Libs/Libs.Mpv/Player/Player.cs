@@ -117,7 +117,7 @@ public sealed partial class Player : IDisposable
     /// </summary>
     /// <param name="path">File path.</param>
     /// <returns><see cref="Task"/>.</returns>
-    public async Task OpenAsync(string path)
+    public async Task OpenFileAsync(string path)
     {
         await Client.ExecuteAsync(new[] { "loadfile", path, "replace" });
         Client.SetProperty(PauseProperty, !AutoPlay);
@@ -126,12 +126,44 @@ public sealed partial class Player : IDisposable
     /// <summary>
     /// Render the video to the window.
     /// </summary>
-    /// <param name="commands">Play commands.</param>
+    /// <param name="command">Play commands.</param>
     /// <returns><see cref="Task"/>.</returns>
-    public async Task OpenAsync(string[] commands)
+    public async Task OpenAsync(string command)
     {
-        await Client.ExecuteAsync(commands);
+        await Client.ExecuteAsync(command);
         Client.SetProperty(PauseProperty, !AutoPlay);
+    }
+
+    /// <summary>
+    /// 播放哔哩视频.
+    /// </summary>
+    /// <param name="options">参数.</param>
+    /// <returns><see cref="Task"/>.</returns>
+    public async Task OpenBiliAsync(BiliPlayOptions options)
+    {
+        if (options.IsLive)
+        {
+            Client.SetOption("ytdl", "no");
+        }
+
+        Client.SetOption("user-agent", options.UserAgent);
+
+        var headers = new List<string>
+        {
+            $"Cookie: '{options.Cookies}'",
+            $"Referer: '{options.Referer}'",
+        };
+
+        Client.SetOption("http-header-fields", string.Join(",", headers));
+
+        if (!options.IsLive && !options.OnlyAudio && !string.IsNullOrEmpty(options.AudioUrl))
+        {
+            Client.SetOption("audio-files", options.AudioUrl);
+        }
+
+        var openUrl = options.IsLive ? options.VideoUrl :
+            options.OnlyAudio && !string.IsNullOrEmpty(options.AudioUrl) ? options.AudioUrl : options.VideoUrl;
+        await Client.ExecuteAsync(new[] { "loadfile", openUrl, "replace" });
     }
 
     /// <summary>

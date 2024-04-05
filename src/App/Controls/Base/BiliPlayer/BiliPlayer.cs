@@ -105,6 +105,8 @@ public sealed class BiliPlayer : BiliPlayerBase, IHostPlayer
             _openGLRenderControl.Setting = new OpenGLContextSettings()
             {
                 GraphicsProfile = OpenTK.Windowing.Common.ContextProfile.Compatability,
+                MajorVersion = 4,
+                MinorVersion = 6,
             };
 
             _openGLRenderControl.Render += OnOpenGLRender;
@@ -247,8 +249,8 @@ public sealed class BiliPlayer : BiliPlayerBase, IHostPlayer
             }
 
             _mpvPlayer = vp;
-            await ((MpvPlayerViewModel)ViewModel).SetInitializeArgumentsAsync(new Libs.Mpv.Args.InitializeArgument(default, func: OpenGLRenderContext.GetProcAddress));
             _openGLRenderControl.Initialize();
+            await ((MpvPlayerViewModel)ViewModel).SetInitializeArgumentsAsync(new Libs.Mpv.Args.InitializeArgument(default, func: OpenGLRenderContext.GetProcAddress));
         }
     }
 

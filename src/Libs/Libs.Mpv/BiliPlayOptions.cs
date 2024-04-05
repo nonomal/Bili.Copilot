@@ -36,4 +36,9 @@ public sealed class BiliPlayOptions
     /// Cookies.
     /// </summary>
     public string Cookies { get; set; }
+
+    /// <summary>
+    /// 是否直播.
+    /// </summary>
+    public bool IsLive { get; set; }
 }

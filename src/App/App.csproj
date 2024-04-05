@@ -34,6 +34,7 @@
       <Content Remove="Assets\ffmpeg\x64\postproc-56.dll" />
       <Content Remove="Assets\ffmpeg\x64\swresample-4.dll" />
       <Content Remove="Assets\ffmpeg\x64\swscale-6.dll" />
+      <Content Remove="Assets\libmpv\x64\libmpv-2.dll" />
     </ItemGroup>
     <ItemGroup>
         <None Remove="Assets\AppCenterSecret.txt" />
@@ -217,8 +218,8 @@
         <PackageReference Include="Roman-Numerals" Version="2.0.0" />
         <PackageReference Include="Silk.NET.Direct3D11" Version="2.20.0" />
         <PackageReference Include="Silk.NET.OpenGL" Version="2.20.0" />
-        <PackageReference Include="Vortice.WinUI" Version="3.4.4-beta" />
-        <PackageReference Include="WinUIEx" Version="2.3.3" />
+        <PackageReference Include="Vortice.WinUI" Version="3.5.0" />
+        <PackageReference Include="WinUIEx" Version="2.3.4" />
         <Manifest Include="$(ApplicationManifest)" />
     </ItemGroup>
 
@@ -811,5 +812,10 @@
     </ItemGroup>
     <ItemGroup>
       <Resource Remove="Controls\DebugDialog.xaml" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Update="Assets\libmpv\x64\libmpv-2.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 </Project>

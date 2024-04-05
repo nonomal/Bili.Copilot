@@ -32,7 +32,7 @@ public sealed partial class MpvPlayerViewModel : ViewModelBase, IPlayerViewModel
     {
         var currentFolder = Package.Current.InstalledPath;
         var arch = RuntimeInformation.ProcessArchitecture == Architecture.Arm64 ? "arm64" : "x64";
-        var libmpvFolder = System.IO.Path.Combine(currentFolder, "Assets", "libmpv", arch, "libmpv.dll");
+        var libmpvFolder = System.IO.Path.Combine(currentFolder, "Assets", "libmpv", arch, "libmpv-2.dll");
         var player = new Player(libmpvFolder);
         player.Client.SetProperty("vo", "libmpv");
         player.PlaybackStateChanged += OnPlaybackStateChanged;

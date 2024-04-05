@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bili.Copilot.Libs.Mpv;
 using Bili.Copilot.Libs.Mpv.Args;
@@ -80,40 +79,29 @@ public sealed partial class MpvPlayerViewModel
 
     private async Task LoadDashVideoSourceAsync(bool onlyAudio)
     {
-        var commandList = new List<string>();
-
-        // {
-        //    "cookies",
-        //    $"user-agent=\"{ServiceConstants.DefaultUserAgentString}\"",
-        //    $"http-header-fields=\"Cookie: {AuthorizeProvider.GetCookieString()}\"",
-        //    "http-header-fields=\"Referer: https://www.bilibili.com\"",
-        // };
-        // if (_audio != null)
-        // {
-        //     commandList.Add($"audio-file=\"{_audio.BaseUrl}\"");
-        // }
-        if (!onlyAudio && _video != null)
+        await ((Player)Player).OpenBiliAsync(new BiliPlayOptions
         {
-            commandList.Add($"{_video.BaseUrl}");
-        }
-
-        commandList.Add("replace");
-        await ((Player)Player).OpenAsync(commandList.ToArray());
+            AudioUrl = _audio?.BaseUrl,
+            Cookies = AuthorizeProvider.GetCookieString(),
+            UserAgent = ServiceConstants.DefaultUserAgentString,
+            VideoUrl = _video?.BaseUrl,
+            OnlyAudio = onlyAudio,
+            Referer = "https://www.bilibili.com",
+        });
     }
 
     private async Task LoadDashLiveSourceAsync(string url, bool onlyAudio)
     {
-        var commandList = new List<string>
+        await ((Player)Player).OpenBiliAsync(new BiliPlayOptions
         {
-            "cookies",
-            "no-ytdl",
-            $"user-agent=\"Mozilla/5.0 BiliDroid/1.12.0 (bbcallen@gmail.com)\"",
-            $"http-header-fields=\"Cookie: {AuthorizeProvider.GetCookieString()}\"",
-            "http-header-fields=\"Referer: https://live.bilibili.com\"",
-            url,
-            "replace",
-        };
-        await ((Player)Player).OpenAsync(commandList.ToArray());
+            AudioUrl = string.Empty,
+            Cookies = AuthorizeProvider.GetCookieString(),
+            UserAgent = "Mozilla/5.0 BiliDroid/1.12.0 (bbcallen@gmail.com)",
+            VideoUrl = url,
+            OnlyAudio = onlyAudio,
+            Referer = "https://live.bilibili.com",
+            IsLive = true,
+        });
     }
 
     private async Task LoadWebDavVideoAsync()
@@ -173,6 +161,11 @@ public sealed partial class MpvPlayerViewModel
         var position = TimeSpan.FromSeconds(e.Position);
         _dispatcherQueue.TryEnqueue(() =>
         {
+            if (!IsPlayerReady)
+            {
+                OnPropertyChanged(nameof(IsPlayerReady));
+            }
+
             PositionChanged?.Invoke(this, new MediaPositionChangedEventArgs(position, duration));
         });
     }
